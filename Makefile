@@ -1,8 +1,8 @@
 CC = g++
-CFLAGS = -Wall 
+CFLAGS = -Wall -std=c++17
 EXEC = main
 LIBS = -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor
-SRCS = main.cpp
+SRCS = main.cpp ground.cpp
 GLAD = glad.c
 
 all: $(EXEC)
