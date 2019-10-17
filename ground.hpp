@@ -13,4 +13,3 @@
 
 
 void drawGround();
-void errorCheck(int vertexShader);
