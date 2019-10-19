@@ -6,10 +6,17 @@ MACLIBS = -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit -framework
 SRCS = main.cpp ground.cpp
 GLAD = glad.c
 
-all: $(EXEC)
+mac: $(EXEC)
 
 $(EXEC): $(SRCS) $(GLAD)
 	$(CC) $(CFLAGS) -o $(EXEC) $(SRCS) $(GLAD) $(MACLIBS)
+
+linux: $(EXEC)
+
+$(EXEC): $(SRCS) $(GLAD)
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRCS) $(GLAD) $(LINUXLIBS)
+
+
 
 run:
 	./$(EXEC)
