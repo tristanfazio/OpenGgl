@@ -11,5 +11,7 @@
 
 #include <iostream>
 
+#include "shaders/shader.h"
+
 
 void drawGround();

@@ -40,6 +40,10 @@ void drawGround()
     unsigned int VBO; //vertex buffer object
     unsigned int EBO; //element buffer object
 
+    Shader shader("shaders/ground.vs", "shaders/ground.fs");
+    shader.use();
+    shader.setVec3("ourColor",glm::vec3(0.545f, 0.271f, 0.075f));
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -54,9 +58,6 @@ void drawGround()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    int vertexColorLocation = glGetUniformLocation(GL_CURRENT_PROGRAM, "ourColor");
-    glUniform4f(vertexColorLocation, 139.0f, 69.0f, 19.0f, 1.0f);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
 

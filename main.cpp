@@ -16,8 +16,6 @@ int main()
     //initialise a window
     GLFWwindow* window = initWindow(800,600);
 
-    Shader shader("shader/3.3.shader.vs", "shader/3.3.shader.fs");
-
     // create transformations
     glm::mat4 view          = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
     glm::mat4 projection    = glm::mat4(1.0f);
@@ -35,8 +33,6 @@ int main()
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        shader.use();
 
         drawGround();
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

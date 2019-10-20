@@ -13,7 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "shader/shader.h"
+#include "shaders/shader.h"
 #include "ground.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
