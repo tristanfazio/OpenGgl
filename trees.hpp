@@ -1,9 +1,9 @@
 /***********************************************
- * TITLE: ground.hpp
+ * TITLE: trees.hpp
  * AUTHOR: Tristan Fazio
  * UNIT: Computer Graphics
  * DATE: 10/19
- * PURPOSE: header file for the ground object
+ * PURPOSE: header file for the trees object
  **********************************************/
 
 #include <glad/glad.h>
@@ -15,5 +15,4 @@
 
 #include "shaders/shader.h"
 
-
-void drawGround(unsigned int texture,glm::mat4 view, glm::mat4 projection);
+void drawTrees(unsigned int texture, glm::mat4 view, glm::mat4 projection);

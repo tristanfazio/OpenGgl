@@ -3,63 +3,97 @@
  * AUTHOR: Tristan Fazio
  * UNIT: Computer Graphics
  * DATE: 10/19
- * PURPOSE:
+ * PURPOSE: draw a box object representing the ground in the world scene
  **********************************************/
 
 #include "ground.hpp"
 
-void drawGround()
+void drawGround(unsigned int texture, glm::mat4 view, glm::mat4 projection)
 {
     //define vertices
     float vertices[] = 
     {
-        1.0f,  0.5f, 0.0f,  // near top right 0
-        1.0f, -0.5f, 0.0f,  // near bottom right 1
-        -1.0f, -0.5f, 0.0f,  // near bottom left 2
-        -1.0f,  0.5f, 0.0f,   // near top left  3
-        1.0f,  0.5f, 1.0f,  // far top right
-        1.0f, -0.5f, 1.0f,  // far bottom right
-        -01.0f, -0.5f, 1.0f,  // far bottom left
-        -1.0f,  0.5f, 1.0f   // far top left 
+        // positions          // texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        0.5f, -0.5f, -0.5f,  1.0f,  1.0f,
+        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f
     };
     
-    unsigned int indices[] = 
-    {  
-        //front
-        0,1,2,   // first triangle
-        0,2,3,    // second triangle
-        //back
-        4,5,6,  // first triangle
-        4,6,7,  // second triangle
-        //top
-        0,3,4,  // first triangle
-        0,4,7   // second triangle
-    };  
-
     unsigned int VAO;//vertex array object
     unsigned int VBO; //vertex buffer object
-    unsigned int EBO; //element buffer object
 
-    Shader shader("shaders/ground.vs", "shaders/ground.fs");
+    //use shader
+    Shader shader("shaders/cmnShader.vs", "shaders/cmnShader.fs");
     shader.use();
-    shader.setVec3("ourColor",glm::vec3(0.545f, 0.271f, 0.075f));
+    // pass them to the shaders
+    shader.setMat4("projection", projection);
+    shader.setMat4("view",view);
 
+    //gen buffers
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
 
+    //bind buffers
     glBindVertexArray(VAO);
-
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    //set vertex attributes
+    //positions
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    //texture maps
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+    //apply texture
+    glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
-    glDrawElements(GL_TRIANGLES,8,GL_UNSIGNED_INT,0);
+    // create transformations
+    glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    model = glm::scale(model, glm::vec3(50.0f, 0.5f, 50.0f));
+    model = glm::translate(model,glm::vec3(0.0f,-0.5f,0.0f));
+            
+    shader.setMat4("model",model);
+    //draw
+    glDrawArrays(GL_TRIANGLES,0,36);
 }
