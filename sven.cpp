@@ -8,7 +8,7 @@
 
 #include "sven.hpp"
 
-void drawSven(unsigned int texture, glm::mat4 view, glm::mat4 projection)
+void drawSven(unsigned int texture, glm::mat4 view, glm::mat4 projection,glm::vec3 cameraPos,bool svenEquipped)
 {
     //define vertices
     float vertices[] = 
@@ -118,7 +118,12 @@ void drawSven(unsigned int texture, glm::mat4 view, glm::mat4 projection)
 		{	
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, sven_positions[tab]);
-            model = glm::translate(model, glm::vec3(5.0f, 0.2f, -8.5f));
+            if(svenEquipped) {
+                model = glm::translate(model, glm::vec3(cameraPos.x - 0.2, 0.2f, cameraPos.z + 0.2f));
+            }
+            else {
+                model = glm::translate(model, glm::vec3(5.0f, 0.2f, -8.5f));
+            }
 			model = glm::scale(model, sven_scales[tab]);
 			
 

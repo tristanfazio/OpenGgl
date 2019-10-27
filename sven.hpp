@@ -16,4 +16,4 @@
 #include "shaders/shader.h"
 
 
-void drawSven(unsigned int texture,glm::mat4 view, glm::mat4 projection);
+void drawSven(unsigned int texture,glm::mat4 view, glm::mat4 projection,glm::vec3 cameraPos,bool svenEquipped);

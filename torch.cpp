@@ -97,13 +97,11 @@ void drawTorch(unsigned int tex_torch, glm::mat4 view, glm::mat4 projection, glm
         }
         torchX = 2.5f;
         torchZ = 2.5f;
-        std::cout << "not equip" << std::endl;
     }
     else if(torchEquipped) {
         torchX = cameraPos.x + 0.1f;
         torchZ = cameraPos.z - 0.1f;
         torchY = 0.3f;
-        std::cout << "equip" << std::endl;
     }
     //torch
     //  wood

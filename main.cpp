@@ -20,8 +20,9 @@ glm::vec3 cameraPos   = glm::vec3(5.0f, 0.5f, 7.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 glm::vec3 cameraDown    = glm::vec3(0.0f, -1.0f,  0.0f);
+float cameraSpeed;
 bool firstMouse = true;
-float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+float yaw   = -90.0f;
 float pitch =  0.0f;
 float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
@@ -74,8 +75,8 @@ int main()
         //draw elements
         drawGround(tex_ground,view,projection);
         drawWall(tex_stone,view,projection);
-        drawSven(tex_dog,view,projection);
-        drawWatersheep(tex_wool,view,projection,cameraPos);
+        drawSven(tex_dog,view,projection,cameraPos,svenEquipped);
+        drawWatersheep(tex_wool,view,projection,cameraPos,cameraSpeed,svenEquipped);
         drawTrees(tex_trees,tex_bark,view,projection);
         drawTorch(tex_bark,view,projection,cameraPos,torchEquipped);
 
@@ -92,7 +93,7 @@ int main()
 
 void processInput(GLFWwindow *window)
 {
-    float cameraSpeed = 2.5 * deltaTime; 
+    cameraSpeed = 2.5 * deltaTime; 
     //exit
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
@@ -139,6 +140,10 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
         toggle_torch_distance();
         std::cout << "F Pressed" << std::endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+        toggle_sven_distance();
+        std::cout << "E Pressed" << std::endl;
     }
     
 }
@@ -240,6 +245,8 @@ void restart() {
     cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
     cameraDown  = glm::vec3(0.0f, -1.0f, 0.0f);
+    torchEquipped = false;
+    svenEquipped = false;
 }
 
 void toggleProj() {
@@ -260,4 +267,12 @@ void toggle_torch_distance()
 		torchEquipped = true;
 	else
 		torchEquipped = false;
+}
+
+void toggle_sven_distance()
+{
+	if(glm::length(cameraPos - glm::vec3(5.0f,0.0f,-8.0f)) <= 1.6f)
+		svenEquipped = true;
+	else
+		svenEquipped = false;
 }

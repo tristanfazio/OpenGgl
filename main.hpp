@@ -29,4 +29,5 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void restart();
 void toggleProj();
+void toggle_sven_distance();
 void toggle_torch_distance();

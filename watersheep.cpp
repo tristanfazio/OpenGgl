@@ -8,7 +8,7 @@
 
 #include "watersheep.hpp"
 
-void drawWatersheep(unsigned int texture, glm::mat4 view, glm::mat4 projection, glm::vec3 cameraPos)
+void drawWatersheep(unsigned int texture, glm::mat4 view, glm::mat4 projection, glm::vec3 cameraPos,float cameraSpeed, bool svenEquipped)
 {
     //define vertices
     float vertices[] = 
@@ -118,7 +118,12 @@ void drawWatersheep(unsigned int texture, glm::mat4 view, glm::mat4 projection, 
 		{	
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, watersheep_positions[tab]);
+            if(svenEquipped) {
+            model = glm::translate(model, glm::vec3(cameraPos.x, 0.2f, cameraPos.y)*cameraSpeed);
+            }
+            else {
             model = glm::translate(model, glm::vec3(7.5f, 0.2f, -10.0f));
+            }
 			model = glm::scale(model, watersheep_scales[tab]);
 			
 			shader.setMat4("model", model);
