@@ -16,6 +16,10 @@
 #include "shaders/shader.h"
 #include "ground.hpp"
 #include "trees.hpp"
+#include "wall.hpp"
+#include "sven.hpp"
+#include "watersheep.hpp"
+#include "torch.hpp"
 #include "utils/textureloader.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -23,3 +27,6 @@ void processInput(GLFWwindow *window);
 GLFWwindow* initWindow(int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void restart();
+void toggleProj();
+void toggle_torch_distance();

@@ -15,4 +15,4 @@
 
 #include "shaders/shader.h"
 
-void drawTrees(unsigned int texture, glm::mat4 view, glm::mat4 projection);
+void drawTrees(unsigned int tex_leaves,unsigned int tex_wood, glm::mat4 view, glm::mat4 projection);

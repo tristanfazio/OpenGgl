@@ -1,0 +1,145 @@
+/***********************************************
+ * TITLE: wall.cpp
+ * AUTHOR: Tristan Fazio
+ * UNIT: Computer Graphics
+ * DATE: 10/19
+ * PURPOSE: draw a box object representing the walls in the world scene
+ **********************************************/
+
+#include "wall.hpp"
+
+void drawWall(unsigned int texture, glm::mat4 view, glm::mat4 projection)
+{
+    //define vertices
+    float vertices[] = 
+    {
+        // positions          // texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+        0.5f, -0.5f, -0.5f,  1.0f,  1.0f,
+        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f
+    };
+    
+    unsigned int VAO;//vertex array object
+    unsigned int VBO; //vertex buffer object
+
+    //use shader
+    Shader shader("shaders/cmnShader.vs", "shaders/cmnShader.fs");
+    shader.use();
+    // pass them to the shaders
+    shader.setMat4("projection", projection);
+    shader.setMat4("view",view);
+
+    //gen buffers
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    //bind buffers
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    //set vertex attributes
+    //positions
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    //texture maps
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    //apply texture
+    glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+    glm::mat4 model;
+
+    //fence posts
+        // 1
+            // create transformations
+    model = glm::mat4(1.0f); 
+    model = glm::translate(model,glm::vec3(4.0f,0.0f,0.0f));
+    model = glm::scale(model, glm::vec3(0.3f, 1.0f, 0.3f));
+    shader.setMat4("model",model);
+            //draw
+    glDrawArrays(GL_TRIANGLES,0,36);
+        //2
+            // create transformations
+    model = glm::mat4(1.0f); 
+    model = glm::translate(model,glm::vec3(6.0f,0.0f,0.0f));
+    model = glm::scale(model, glm::vec3(0.3f, 1.0f, 0.3f));
+    shader.setMat4("model",model);
+            //draw
+    glDrawArrays(GL_TRIANGLES,0,36);
+
+    //walls
+    for(float i = 6.0; i < 25.0; i+=0.3) {
+        // create transformations
+        model = glm::mat4(1.0f); 
+        model = glm::translate(model,glm::vec3(i,0.35f,0.0f));
+        model = glm::scale(model, glm::vec3(0.3f, 0.2f, 0.3f));
+        shader.setMat4("model",model);
+        //draw
+        glDrawArrays(GL_TRIANGLES,0,36);
+
+    }
+    for(float i = 4.0; i > -25.0; i-=0.3) {
+        // create transformations
+        model = glm::mat4(1.0f); 
+        model = glm::translate(model,glm::vec3(i,0.35f,0.0f));
+        model = glm::scale(model, glm::vec3(0.3f, 0.2f, 0.3f));
+        shader.setMat4("model",model);
+        //draw
+        glDrawArrays(GL_TRIANGLES,0,36);
+
+    }
+    
+    //slider
+    // create transformations
+        float slide = sin(glfwGetTime());
+        if(slide > 0.35f )
+        {
+            slide = 0.35f;
+        }
+        model = glm::mat4(1.0f); 
+        model = glm::translate(model,glm::vec3(5.0,slide,0.0f));
+        model = glm::scale(model, glm::vec3(2.0f, 0.2f, 0.3f));
+        shader.setMat4("model",model);
+        //draw
+        glDrawArrays(GL_TRIANGLES,0,36);
+}

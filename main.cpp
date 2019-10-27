@@ -10,10 +10,16 @@
 
 const int SCR_WIDTH = 800;
 const int SCR_HEIGHT = 600;
+bool jump = false;
+bool torchEquipped = false;
+bool svenEquipped = false;
+bool ortho = false;
+glm::mat4 projection;
 //camera
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraPos   = glm::vec3(5.0f, 0.5f, 7.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+glm::vec3 cameraDown    = glm::vec3(0.0f, -1.0f,  0.0f);
 bool firstMouse = true;
 float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
 float pitch =  0.0f;
@@ -31,12 +37,16 @@ int main()
     GLFWwindow* window = initWindow(800,600);
 
     // create projection
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
 
     //load textures
     unsigned int tex_ground = loadTexture("textures/Dirt01.bmp");
     unsigned int tex_trees = loadTexture("textures/trees.jpg");
+    unsigned int tex_bark = loadTexture("textures/bark.jpg");
+    unsigned int tex_stone = loadTexture("textures/stone.bmp");
+    unsigned int tex_dog = loadTexture("textures/dog.jpg");
+    unsigned int tex_wool = loadTexture("textures/wool01.JPG");
 
     //render loop
     while (!glfwWindowShouldClose(window))
@@ -63,7 +73,11 @@ int main()
 
         //draw elements
         drawGround(tex_ground,view,projection);
-        drawTrees(tex_trees,view,projection);
+        drawWall(tex_stone,view,projection);
+        drawSven(tex_dog,view,projection);
+        drawWatersheep(tex_wool,view,projection,cameraPos);
+        drawTrees(tex_trees,tex_bark,view,projection);
+        drawTorch(tex_bark,view,projection,cameraPos,torchEquipped);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -78,27 +92,55 @@ int main()
 
 void processInput(GLFWwindow *window)
 {
-    //EXIT WITH ESCAPE
     float cameraSpeed = 2.5 * deltaTime; 
+    //exit
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         cameraPos += cameraSpeed * cameraFront;
+        cameraPos.y = 0.5f; //lock camera to y axis
         std::cout << "W Pressed" << std::endl;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         cameraPos -= cameraSpeed * cameraFront;
+        cameraPos.y = 0.5f; //lock camera to y axis
         std::cout << "S Pressed" << std::endl;
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cameraPos.y = 0.5f; //lock camera to y axis
         std::cout << "A Pressed" << std::endl;
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cameraPos.y = 0.5f; //lock camera to y axis
         std::cout << "D Pressed" << std::endl;
     }
+    //Jump with spacebar
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && (jump == false)) {
+        cameraPos += glm::vec3(0.0f,10.0f,0.0f) * cameraSpeed;
+        jump = true;
+        std::cout << "SPACE Pressed" << std::endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE && (jump == true)) {
+        cameraPos += glm::vec3(0.0f,-10.0f,0.0f) * cameraSpeed;
+        jump = false;
+        std::cout << "SPACE Released" << std::endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+        restart();
+        std::cout << "R Pressed" << std::endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+        toggleProj();
+        std::cout << "P Pressed" << std::endl;
+    }
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+        toggle_torch_distance();
+        std::cout << "F Pressed" << std::endl;
+    }
+    
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -191,4 +233,31 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         fov = 1.0f;
     if (fov >= 45.0f)
         fov = 45.0f;
+}
+
+void restart() {
+    cameraPos   = glm::vec3(5.0f, 0.5f, 7.5f);
+    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
+    cameraDown  = glm::vec3(0.0f, -1.0f, 0.0f);
+}
+
+void toggleProj() {
+    if(!ortho) {
+        projection = glm::ortho(-10.0f, 50.0f, 0.0f, 50.0f, 0.1f, 100.0f);
+        ortho = true;
+    }
+    else {
+        projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        ortho = false;
+    }
+    
+}
+
+void toggle_torch_distance()
+{
+	if(glm::length(cameraPos - glm::vec3(2.50f,0.0f,2.5f)) <= 1.6f)
+		torchEquipped = true;
+	else
+		torchEquipped = false;
 }
