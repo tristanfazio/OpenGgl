@@ -36,7 +36,7 @@ int main()
 
     //load textures
     unsigned int tex_ground = loadTexture("textures/Dirt01.bmp");
-    unsigned int tex_trees = loadTexture("textures/Dirt01.bmp");
+    unsigned int tex_trees = loadTexture("textures/trees.jpg");
 
     //render loop
     while (!glfwWindowShouldClose(window))

@@ -23,11 +23,12 @@ void drawTrees(unsigned int texture, glm::mat4 view, glm::mat4 projection)
     unsigned int VBO; //vertex buffer object
 
     //use shader
-    Shader shader("shaders/cmnShader.vs", "shaders/cmnShader.fs");
+    Shader shader("shaders/cmnShader.vs", "shaders/treeShader.fs");
     shader.use();
     // pass them to the shaders
     shader.setMat4("projection", projection);
     shader.setMat4("view",view);
+    shader.setVec3("ourColor",glm::vec3(0.0f,0.392f,0.0f));
 
     //gen buffers
     glGenVertexArrays(1, &VAO);
@@ -40,24 +41,71 @@ void drawTrees(unsigned int texture, glm::mat4 view, glm::mat4 projection)
 
     //set vertex attributes
     //positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     //texture maps
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     //apply texture
-    glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
+    //tree 1
     // create transformations
     glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
     model = glm::translate(model,glm::vec3(0.0f,0.0f,-5.0f));
     shader.setMat4("model",model);
-
     //draw leaves
     glDrawArrays(GL_TRIANGLES,0,3);
+    model = glm::rotate(model,glm::radians(90.0f),glm::vec3(0.0f,1.0f,0.0f));
+    shader.setMat4("model",model);
+    //draw transformed leaves
+    glDrawArrays(GL_TRIANGLES,0,3);
 
+    //tree 2
+    // create transformations
+    model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    model = glm::translate(model,glm::vec3(10.0f,0.0f,-5.0f));
+    shader.setMat4("model",model);
+    //draw leaves
+    glDrawArrays(GL_TRIANGLES,0,3);
+    model = glm::rotate(model,glm::radians(90.0f),glm::vec3(0.0f,1.0f,0.0f));
+    shader.setMat4("model",model);
+    //draw transformed leaves
+    glDrawArrays(GL_TRIANGLES,0,3);
+
+    //tree 3
+    // create transformations
+    model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    model = glm::translate(model,glm::vec3(5.0f,0.0f,-10.0f));
+    shader.setMat4("model",model);
+    //draw leaves
+    glDrawArrays(GL_TRIANGLES,0,3);
+    model = glm::rotate(model,glm::radians(90.0f),glm::vec3(0.0f,1.0f,0.0f));
+    shader.setMat4("model",model);
+    //draw transformed leaves
+    glDrawArrays(GL_TRIANGLES,0,3);
+
+    //tree 4
+    // create transformations
+    model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    model = glm::translate(model,glm::vec3(2.5f,0.0f,-7.5f));
+    shader.setMat4("model",model);
+    //draw leaves
+    glDrawArrays(GL_TRIANGLES,0,3);
+    model = glm::rotate(model,glm::radians(90.0f),glm::vec3(0.0f,1.0f,0.0f));
+    shader.setMat4("model",model);
+    //draw transformed leaves
+    glDrawArrays(GL_TRIANGLES,0,3);
+
+    //tree 5
+    // create transformations
+    model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    model = glm::translate(model,glm::vec3(7.5f,0.0f,-7.5f));
+    shader.setMat4("model",model);
+    //draw leaves
+    glDrawArrays(GL_TRIANGLES,0,3);
     model = glm::rotate(model,glm::radians(90.0f),glm::vec3(0.0f,1.0f,0.0f));
     shader.setMat4("model",model);
     //draw transformed leaves
