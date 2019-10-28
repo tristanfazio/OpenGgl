@@ -9,7 +9,7 @@ GLAD = glad.c
 all: $(EXEC)
 
 $(EXEC): $(SRCS) $(GLAD)
-	$(CC) $(CFLAGS) -o $(EXEC) $(SRCS) $(GLAD) $(MACLIBS)
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRCS) $(GLAD) $(LINUXLIBS)
 
 run:
 	./$(EXEC)
